@@ -11,14 +11,13 @@ export class ReportsService {
     constructor(@InjectRepository(Report) private reportRepository: Repository<Report>) {}
 
     async initializeReport(req: ReportDto) {
-        console.log(req);
-        const newReport = this.reportRepository.create({
+        const newReport = await this.reportRepository.create({
             project_name: req.project_name,
             data: req.data,
             reason: req.reason,
             reporter: req.reporter,
         });
-        console.log(newReport);
+
         await this.reportRepository.save(newReport);
 
         return newReport;
