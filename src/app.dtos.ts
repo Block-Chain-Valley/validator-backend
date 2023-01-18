@@ -25,6 +25,13 @@ export class ProjectDataReq {
     url: string;
 }
 
+export class BaseRes {
+    resultCode: string;
+    message: string;
+}
+
+export class ReportRes extends BaseRes {}
+
 export class ReportDto {
     project_name: string;
     data: ProjectDataDto;

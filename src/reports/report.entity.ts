@@ -14,14 +14,5 @@ export class Report {
     data: Data;
 
     @Column()
-    reason: string;
-
-    @Column()
     reporter: string;
-
-    @Column({ default: 0 })
-    safeNum: number;
-
-    @Column({ default: 1 })
-    reportNum: number;
 }

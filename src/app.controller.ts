@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { ReportDto, ReportReq } from "./app.dtos";
+import { Report } from "./reports/report.entity";
 
 @Controller()
 export class AppController {
@@ -17,7 +18,7 @@ export class AppController {
     @HttpCode(HttpStatus.OK)
     async addSafeCount(@Body() req: ReportReq) {
         const reqDto = Object.assign(new ReportDto(), req);
-        this.appService.addReportCount(reqDto);
+        this.appService.addSafeCount(reqDto);
     }
 
     @Post("/count/report")
@@ -25,5 +26,11 @@ export class AppController {
     async addReportCount(@Body() req: ReportReq) {
         const reqDto = Object.assign(new ReportDto(), req);
         this.appService.addReportCount(reqDto);
+    }
+
+    @Get("/all")
+    @HttpCode(HttpStatus.OK)
+    async getAllReport(): Promise<Report[]> {
+        return this.appService.getAllReport();
     }
 }

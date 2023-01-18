@@ -15,6 +15,15 @@ export class Data {
     @Column()
     url: string;
 
+    @Column()
+    reason: string;
+
+    @Column({ default: 0 })
+    safeNum: number;
+
+    @Column({ default: 1 })
+    reportNum: number;
+
     @OneToOne(() => Report, (report) => report.data)
     report: Report;
 }
