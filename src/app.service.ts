@@ -42,6 +42,13 @@ export class AppService {
             }
 
             /* User의 일일 신고 횟수를 만족하는지 확인 */
+            // TODO: 최대 숫자 수정 필요
+            const user = await this.usersService.findOne(req.reporter);
+            console.log(user.daily_report_num);
+            if (user.daily_report_num >= 3) {
+                this.logger.warn("SERVER_ERROR: REPORT_COUNT_EXCEED");
+                throw new BadRequestException("SERVER_ERROR: REPORT_COUNT_EXCEED");
+            }
 
             /* 그렇지 않을 시, Report 생성 */
             const newReport = await this.reportsService.initializeReport(req);
@@ -72,11 +79,19 @@ export class AppService {
             /* 이미 신고한 Report인지 확인 */
 
             /* User의 일일 신고 횟수를 만족하는지 확인 */
+            // TODO: 최대 숫자 수정 필요
+            const user = await this.usersService.findOne(req.reporter);
+            console.log(user.daily_report_num);
+            if (user.daily_report_num >= 3) {
+                this.logger.warn("SERVER_ERROR: REPORT_COUNT_EXCEED");
+                throw new BadRequestException("SERVER_ERROR: REPORT_COUNT_EXCEED");
+            }
 
             /* SafeCount 추가 */
             await this.reportsService.addSafeCount(req.project_name);
 
             /* User 일일 신고 횟수 추가 */
+            await this.usersService.addDailyReportCount(req.reporter);
 
             /* Response 반환 */
             return {
@@ -101,11 +116,19 @@ export class AppService {
             /* 이미 신고한 Report인지 확인 */
 
             /* User의 일일 신고 횟수를 만족하는지 확인 */
+            // TODO: 최대 숫자 수정 필요
+            const user = await this.usersService.findOne(req.reporter);
+            console.log(user.daily_report_num);
+            if (user.daily_report_num >= 3) {
+                this.logger.warn("SERVER_ERROR: REPORT_COUNT_EXCEED");
+                throw new BadRequestException("SERVER_ERROR: REPORT_COUNT_EXCEED");
+            }
 
             /* SafeCount 추가 */
             await this.reportsService.addReportCount(req.project_name);
 
             /* User 일일 신고 횟수 추가 */
+            await this.usersService.addDailyReportCount(req.reporter);
 
             /* Response 반환 */
             return {
