@@ -6,14 +6,31 @@ import {
     NotFoundException,
 } from "@nestjs/common";
 import { ReportsService } from "./reports/reports.service";
-import { ReportDto, ReportRes } from "./app.dtos";
+import { ReportDto, ReportRes, UserDto, UserRes } from "./app.dtos";
 import { Report } from "./reports/report.entity";
+import { UsersService } from "./users/users.service";
+import { User } from "./users/user.entity";
 
 @Injectable()
 export class AppService {
     private readonly logger = new Logger();
 
-    constructor(private reportsService: ReportsService) {}
+    constructor(private reportsService: ReportsService, private usersService: UsersService) {}
+
+    async createUser(req: UserDto): Promise<UserRes> {
+        const newUser = await this.usersService.create(req);
+        return {
+            resultCode: "0",
+            message: "success",
+            address: newUser.address,
+            last_report: newUser.last_report,
+            daily_report_num: newUser.daily_report_num,
+        };
+    }
+
+    async getAllUser(): Promise<User[]> {
+        return this.usersService.findAll();
+    }
 
     async createReport(req: ReportDto): Promise<ReportRes> {
         try {
@@ -30,6 +47,7 @@ export class AppService {
             const newReport = await this.reportsService.initializeReport(req);
 
             /* User 일일 신고 횟수 추가 */
+            await this.usersService.addDailyReportCount(req.reporter);
 
             /* Response 반환 */
             return {
@@ -42,7 +60,7 @@ export class AppService {
         }
     }
 
-    async addSafeCount(req: ReportDto) {
+    async addSafeCount(req: ReportDto): Promise<ReportRes> {
         try {
             /* 이미 생성된 Report인지 확인 */
             const report = await this.reportsService.findReport(req.project_name);
@@ -56,16 +74,22 @@ export class AppService {
             /* User의 일일 신고 횟수를 만족하는지 확인 */
 
             /* SafeCount 추가 */
-            return this.reportsService.addSafeCount(req.project_name);
+            await this.reportsService.addSafeCount(req.project_name);
 
             /* User 일일 신고 횟수 추가 */
+
+            /* Response 반환 */
+            return {
+                resultCode: "0",
+                message: "success",
+            };
         } catch (err: any) {
             const msg = err.message || "";
             throw new InternalServerErrorException(msg);
         }
     }
 
-    async addReportCount(req: ReportDto) {
+    async addReportCount(req: ReportDto): Promise<ReportRes> {
         try {
             /* 이미 생성된 Report인지 확인 */
             const report = await this.reportsService.findReport(req.project_name);
@@ -79,9 +103,15 @@ export class AppService {
             /* User의 일일 신고 횟수를 만족하는지 확인 */
 
             /* SafeCount 추가 */
-            return this.reportsService.addReportCount(req.project_name);
+            await this.reportsService.addReportCount(req.project_name);
 
             /* User 일일 신고 횟수 추가 */
+
+            /* Response 반환 */
+            return {
+                resultCode: "0",
+                message: "success",
+            };
         } catch (err: any) {
             const msg = err.message || "";
             throw new InternalServerErrorException(msg);

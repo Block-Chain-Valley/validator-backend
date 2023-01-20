@@ -1,5 +1,10 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsDate, IsNumber, IsString } from "class-validator";
 import { IsAddress } from "./dtos.validation";
+
+export class UserReq {
+    @IsAddress()
+    address: string;
+}
 
 export class ReportReq {
     @IsString()
@@ -25,12 +30,9 @@ export class ProjectDataReq {
     url: string;
 }
 
-export class BaseRes {
-    resultCode: string;
-    message: string;
+export class UserDto {
+    address: string;
 }
-
-export class ReportRes extends BaseRes {}
 
 export class ReportDto {
     project_name: string;
@@ -53,3 +55,16 @@ export class ProjectDataDto {
     address: string;
     url: string;
 }
+
+export class BaseRes {
+    resultCode: string;
+    message: string;
+}
+
+export class UserRes extends BaseRes {
+    address: string;
+    last_report: Date;
+    daily_report_num: number;
+}
+
+export class ReportRes extends BaseRes {}

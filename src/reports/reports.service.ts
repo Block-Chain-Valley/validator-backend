@@ -14,7 +14,7 @@ export class ReportsService {
         @InjectRepository(Data) private dataRepository: Repository<Data>,
     ) {}
 
-    async initializeReport(req: ReportDto) {
+    async initializeReport(req: ReportDto): Promise<Report> {
         const newReport = await this.reportRepository.create({
             project_name: req.project_name,
             data: req.data,
@@ -22,7 +22,7 @@ export class ReportsService {
         });
 
         await this.reportRepository.save(newReport);
-        console.log(newReport);
+
         return newReport;
     }
 
@@ -59,6 +59,7 @@ export class ReportsService {
             const reportData = await this.dataRepository.findOneBy({ id: reports[i].id });
             reports[i].data = reportData;
         }
+
         return reports;
     }
 }
